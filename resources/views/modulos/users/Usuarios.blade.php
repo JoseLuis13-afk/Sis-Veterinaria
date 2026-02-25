@@ -63,7 +63,7 @@
                                 
                                 </a>
                                 
-                                <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                <button class="btn btn-danger EliminarUsuario" usuario="{{$user->name}}" Uid="{{$user->id}}"><i class="fa fa-trash"></i></button>
 
                             </td>
                         </tr> 
@@ -172,9 +172,9 @@
 
             <div class="modal-content">
 
-                <form method="post">
+                <form method="post" action="{{url('Actualizar-Usuario/'.$usuario->id)}}">
                     @csrf
-
+                    @method('put')
                     <div class="modal-body">
 
                         <div class="box-body">
@@ -192,7 +192,7 @@
                                 <select name="rol" class="form-control input-lg" required>
 
                                     <option value="{{$usuario->rol}}">{{$usuario->rol}}</option>
-                                    
+
                                         @php
 
                                             $roles = ['Administrador', 'Veterinario', 'Secretaria'];
@@ -229,7 +229,7 @@
                             <div class="form-group">
 
                                 <h2>Contraseña :</h2>
-                                <input type="password" class="form-control input-lg" name="password" value="{{old('password')}}" required>
+                                <input type="password" class="form-control input-lg" name="password" value="{{old('password')}}">
 
                                 @error('password')
 

@@ -148,6 +148,13 @@
       'El usuario ha sido creado correctamente.',
       'success'
     )
+  @elseif (session('UsuarioActualizado') == 'OK')
+
+    Swal.fire(
+      '¡Actualizado!',
+      'El usuario ha sido actualizado correctamente.',
+      'success'
+    )
 
   @endif
 
@@ -168,6 +175,34 @@
   </script>
   
 @endif
+
+<script type="text/javascript">
+
+  $(".EliminarUsuario").click(function(){
+
+    var usuario = $(this).attr("usuario");
+    var Uid = $(this).attr("Uid");
+
+    Swal.fire({
+      title: '¿Está seguro de eliminar este usuario: '+usuario+'?',
+      text: "¡No podrá revertir esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Sí, eliminarlo!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        window.location = 'Eliminar-Usuario/'+Uid;
+
+      }
+    })
+
+  });
+
+</script>
 
 </body>
 </html>

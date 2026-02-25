@@ -8,8 +8,7 @@ use App\Models\Ajustes;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-
-
+use Illuminate\Support\Facades\File;
 
 
 class UsersController extends Controller
@@ -62,62 +61,46 @@ class UsersController extends Controller
 
    public function ActualizarMisDatos(Request $request)
     {
-        $datos = request();
-        
-        if (auth()->user()->email != request('email')){
+        // 1. Validación súper simplificada
+        $datos = $request->validate([
+            'name'       => ['required', 'string', 'max:255'],
+            // El secreto está aquí: ignora el ID del usuario actual para el correo único
+            'email'      => ['required', 'email', 'max:255', 'unique:users,email,' . auth()->id()],
+            // Nullable permite que venga vacío si no quiere cambiar la clave
+            'password'   => ['nullable', 'string', 'min:3'],
+            // Opcional pero recomendado: validar que la foto sea realmente una imagen
+            'fotoPerfil' => ['nullable', 'image', 'max:2048'] 
+        ]);
 
-            if (request('password')){
-                $datos = request()->validate([
-                    'name' => ['required','string','max:255'],
-                    'email' => ['required','email','unique:users'],
-                    'password' => ['required','string','min:3'],
-                ]);
+        $usuario = auth()->user();
+        $rutaImg = $usuario->foto; // Guardamos la foto actual por defecto
+
+        // 2. Lógica segura para la foto (Soluciona el error 'Is a directory')
+        if ($request->hasFile('fotoPerfil')) {
             
-            }else{
-                $datos = request()->validate([
-                    'name' => ['required','string','max:255'],
-                    'email' => ['required','string','email','max:255','unique:users'],
-                ]);
+            // Verificamos si el usuario YA TIENE una foto en la base de datos y la borramos
+            if ($rutaImg) {
+                Storage::disk('public')->delete($rutaImg);
             }
-        }else{
-             if (request('password')){
-                $datos = request()->validate([
-                    'name' => ['required','string','max:255'],
-                    'email' => ['required','email'],
-                    'password' => ['required','string','min:3'],
-                ]);
             
-            }else{
-                $datos = request()->validate([
-                    'name' => ['required','string','max:255'],
-                    'email' => ['required','email'],
-                ]);
-            }
+            // Guardamos la nueva foto
+            $rutaImg = $request->file('fotoPerfil')->store('Usuarios/'.$datos["name"].'-'.$datos["email"], 'public');
         }
-        if (request('fotoPerfil')){
-            $path = storage_path('app/public/'.auth()->user()->foto);
-            unlink($path);
-            $rutaImg = $request["fotoPerfil"]->store('Usuarios/'.$datos["name"].'-'.$datos["email"], 'public');
-        }else{
-            $rutaImg = auth()->user()->foto;
+
+        // 3. Actualizamos los datos del usuario autenticado
+        $usuario->name  = $datos['name'];
+        $usuario->email = $datos['email'];
+        $usuario->foto  = $rutaImg;
+
+        // 4. Si escribió una contraseña nueva, la encriptamos y la asignamos
+        if (!empty($datos['password'])) {
+            $usuario->password = Hash::make($datos['password']);
         }
-        if (isset($datos["password"])){
-            DB::table('users')->where('id', auth()->user()->id)->update([
-                'name' => $datos['name'],
-                'email' => $datos['email'],
-                'foto' => $rutaImg,
-                'password' => Hash::make($datos['password']),
-               
-            ]);
-        }else{
-            DB::table('users')->where('id', auth()->user()->id)->update([
-                'name' => $datos['name'],
-                'email' => $datos['email'],
-                'foto' => $rutaImg,
-               
-            ]);
-        }
-        return redirect('Mis-Datos');
+
+        // Guardamos todo en la base de datos MySQL
+        $usuario->save();
+
+        return redirect('Mis-Datos')->with('success', 'Tus datos se actualizaron correctamente.');
     }
     public function index()
     {
@@ -166,32 +149,83 @@ class UsersController extends Controller
      */
     public function update(Request $request, string $id_usuario)
     {
-        $datos = request()->validate([
-            'name' => ['string','max:255'],
-            'rol' => ['string','max:255'],
-            'email' => ['string','unique:users,email,'.$id_usuario],
-            'password' => ['string','min:3'], 
-        ]);
+        $usuario = User::find($id_usuario);
 
-        User::where('id', $id_usuario)->update([
-            'name' => $datos['name'],
-            'email' => $datos['email'],
-            'rol' => $datos['rol'],
-        ]);
-        if (isset($datos["password"])){
-            User::where('id', $id_usuario)->update([
+        if ($usuario['email'] != request('email')){
+
+            if (request('password')){
+                $datos = request()->validate([
+                    'name' => ['required','string','max:255'],
+                    'rol' => ["required"],
+                    'email' => ["required",'unique:users'],
+                    'password' => ["string",'min:3'], 
+                ]);
+            }else{
+            $datos = request()->validate([
+                    'name' => ['required','string','max:255'],
+                    'rol' => ["required"],
+                    'email' => ["required",'unique:users']
+                     
+                ]);
+            }
+        } else{
+            if (request('password')){
+                $datos = request()->validate([
+                    'name' => ['required','string','max:255'],
+                    'rol' => ["required"],
+                    'email' => ["required"],
+                    'password' => ["string",'min:3'], 
+                ]);
+            }else{
+            $datos = request()->validate([
+                    'name' => ['required','string','max:255'],
+                    'rol' => ["required"],
+                    'email' => ["required"],
+                     
+                ]);
+            }
+        }
+
+        if (request('password')){
+            DB::table('users')->where('id', $id_usuario)->update([
+                'name' => $datos['name'],
+                'email' => $datos['email'],
+                'rol' => $datos['rol'],
                 'password' => Hash::make($datos['password']),
+            ]);
+        }else{
+            DB::table('users')->where('id', $id_usuario)->update([
+                'name' => $datos['name'],
+                'email' => $datos['email'],
+                'rol' => $datos['rol'],
             ]);
         }
         return redirect('Usuarios')->with('UsuarioActualizado','OK');
+ 
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id_usuario)
+    public function destroy($id_usuario)
     {
+        $usuario = User::find($id_usuario);
+
+        // 1. Verificamos si tiene foto
+        if ($usuario->foto) {
+            
+            $carpetaDelUsuario = dirname($usuario->foto);
+            $rutaFisica = storage_path('app/public/' . $carpetaDelUsuario);
+
+            // 2. Como ya comprobamos que is_dir funciona, borramos la carpeta sin miedo
+            if (is_dir($rutaFisica)) {
+                File::deleteDirectory($rutaFisica);
+            }
+        }
+
+        // 3. Eliminamos de MySQL
         User::destroy($id_usuario);
+
         return redirect('Usuarios')->with('UsuarioEliminado','OK');
     }
 }

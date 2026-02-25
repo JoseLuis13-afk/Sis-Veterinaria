@@ -23,5 +23,5 @@ Route::put('Mis-Datos',[UsersController::class, 'ActualizarMisDatos']);
 Route::get('Usuarios', [UsersController::class, 'index']);
 Route::post('Usuarios', [UsersController::class, 'store']);
 Route::get('Editar-Usuario/{id_usuario}', [UsersController::class, 'edit']);
-Route::put('Editar-Usuario/{id_usuario}', [UsersController::class, 'update']);
-Route::delete('Eliminar-Usuario/{id_usuario}', [UsersController::class, 'destroy']);
+Route::put('Actualizar-Usuario/{id_usuario}', [UsersController::class, 'update']);
+Route::get('Eliminar-Usuario/{id_usuario}', [UsersController::class, 'destroy']);
