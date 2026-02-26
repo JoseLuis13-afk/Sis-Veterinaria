@@ -38,6 +38,10 @@
   <!-- DataTables -->
   <link rel="stylesheet" href="{{url ('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{url ('bower_components/datatables.net-bs/css/responsive.bootstrap.min.css')}}">
+
+   <!-- Select 2 -->
+  <link rel="stylesheet" href="{{url ('bower_components/select2/dist/css/select2.min.css')}}">
+
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
@@ -102,6 +106,12 @@
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/dataTables.responsive.min.js')}}"></script>
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/responsive.bootstrap.min.js')}}"></script>
 
+<!-- Select 2 -->
+<script src="{{url ('bower_components/select2/dist/js/select2.full.min.js')}}"></script>
+
+<!-- CKeditor -->
+<script src="{{url ('bower_components/ckeditor/ckeditor.js')}}"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script type="text/javascript">
@@ -137,6 +147,9 @@
 
   });
 
+  $(".select2").select2();
+  CKEDITOR.replace('detalles');
+
 </script>
 
 <script type="text/javascript">
@@ -153,6 +166,30 @@
     Swal.fire(
       '¡Actualizado!',
       'El usuario ha sido actualizado correctamente.',
+      'success'
+    )
+
+   @elseif (session('ClienteAgregado') == 'OK')
+
+    Swal.fire(
+      '¡Creado!',
+      'El cliente ha sido agregado correctamente.',
+      'success'
+    )
+
+  @elseif (session('ClienteActualizado') == 'OK')
+
+    Swal.fire(
+      '¡Actualizado!',
+      'El cliente ha sido actualizado correctamente.',
+      'success'
+    )
+
+  @elseif (session('MascotaAgregada') == 'OK')
+
+    Swal.fire(
+      '¡Creado!',
+      'La mascota ha sido agregada correctamente.',
       'success'
     )
 

@@ -31,4 +31,4 @@ El proyecto está en desarrollo.
 =======
 # Sis-Veterinaria
 Sistema web integral para la Gestión de Clínicas Veterinarias desarrollado en Laravel 11. Incluye control de citas médicas, roles de usuario, gestión de inventario, historial de mascotas, control de caja y facturación.
->>>>>>> 07c1a54b80cdcac5fb7e5f565625753e30bf561a
+
