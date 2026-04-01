@@ -24,4 +24,9 @@ class Mascotas extends Model
 
     public $timestamps = false;
 
+    public function DUEÑO()
+    {
+        return $this->belongsTo(Clientes::class, 'id_cliente');
+    }
+
 }

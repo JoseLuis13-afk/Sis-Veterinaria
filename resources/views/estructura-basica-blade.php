@@ -14,12 +14,15 @@
 
         <section class="content">
 
-        <div class="box">
-            <div class="box-body">
+            <div class="box">
 
-                
+                <div class="box-body">
+
+                         
+
+                </div>
+
             </div>
-        </div>
 
         </section>
     </div>

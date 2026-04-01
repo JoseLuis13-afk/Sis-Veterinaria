@@ -63,7 +63,12 @@
                                                 <button class="btn btn-success"><i class="fa fa-pencil"></i></button>
 
                                             </a>
-                                            <button class="btn btn-warning"><i class="fa fa-paw"></i> Ver Mascotas</button>
+                                            
+                                            <a href="{{ url('Ver-Mascotas/'.$cliente->id) }}">
+
+                                                <button class="btn btn-warning"><i class="fa fa-paw"></i> Ver Mascotas</button>
+                                                
+                                            </a>
 
                                         </td>
 

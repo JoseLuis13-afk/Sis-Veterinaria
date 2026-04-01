@@ -5,6 +5,8 @@ use App\Http\Controllers\UsersController;
 use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\MascotasController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\CitasController;
+
 Route::get('/', function () {
     return view('modulos.users.Ingresar');
 });
@@ -23,7 +25,7 @@ Route::get('/Mis-Datos', function() {
 Route::put('Mis-Datos',[UsersController::class, 'ActualizarMisDatos']);
 
 Route::get('Usuarios', [UsersController::class, 'index']);
-Route::post('Usuarios', [UsersController::class, 'store']);
+Route::put('Usuarios', [UsersController::class, 'store']);
 Route::get('Editar-Usuario/{id_usuario}', [UsersController::class, 'edit']);
 Route::put('Actualizar-Usuario/{id_usuario}', [UsersController::class, 'update']);
 Route::get('Eliminar-Usuario/{id_usuario}', [UsersController::class, 'destroy']);
@@ -35,4 +37,22 @@ Route::get('Editar-Cliente/{id_cliente}', [ClientesController::class, 'edit']);
 Route::put('Actualizar-Cliente/{id_cliente}', [ClientesController::class, 'update']);
 
 Route::get ('Mascotas', [MascotasController::class, 'index']);
-Route::post ('Mascotas', [MascotasController::class, 'store']);
+Route::put ('Mascotas', [MascotasController::class, 'store']);
+Route::get ('Ver-Mascotas/{id_cliente}', [MascotasController::class, 'VerMascotasCliente']);
+Route::get ('Editar-Mascota/{id_mascota}', [MascotasController::class, 'edit']);
+Route::put ('Actualizar-Mascota/{id_mascota}', [MascotasController::class, 'update']);
+Route::get ('Vacunas/{id_mascota}', [MascotasController::class, 'VacunasMascota']);
+Route::post ('Vacunas/{id_mascota}', [MascotasController::class, 'AgregarVacuna']);
+Route::get ('Carnet-Vacunas-PDF/{id_mascota}', [MascotasController::class, 'CarnetVacunasPDF']);
+Route::get ('Eliminar-Mascota/{id_mascota}', [MascotasController::class, 'destroy']);
+
+Route::get('Veterinarios', [CitasController::class, 'VerVeterinarios']);
+Route::post('Veterinarios', [CitasController::class, 'CrearVeterinarios']);
+Route::put('Estado/{id_veterinario}', [CitasController::class, 'CambiarEstadoVeterinario']);
+
+Route::get('Citas', [CitasController::class, 'index']);
+Route::get('Crear-Cita', [CitasController::class, 'create']);
+Route::post('Crear-Cita', [CitasController::class, 'store']);
+Route::get('Editar-Cita/{id_cita}', [CitasController::class, 'edit']);
+Route::put('Actualizar-Cita/{id_cita}', [CitasController::class, 'update']);
+Route::get('Eliminar-Cita/{id_cita}', [CitasController::class, 'destroy']);

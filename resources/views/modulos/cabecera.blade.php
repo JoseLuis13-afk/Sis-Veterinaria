@@ -217,7 +217,7 @@
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 
               @if (auth()->user()->foto == "")
-              <img src="{{ url('storage/defecto.png') }}" class="user-image" alt="User Image">
+              <img src="{{ url('storage/defecto1.png') }}" class="user-image" alt="User Image">
               @else
               <img src="{{ asset('storage/' . auth()->user()->foto) }}" class="user-image" alt="User">
               @endif

@@ -105,6 +105,8 @@
 <script type="text/javascript" src="{{url ('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/dataTables.responsive.min.js')}}"></script>
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/responsive.bootstrap.min.js')}}"></script>
+<script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+
 
 <!-- Select 2 -->
 <script src="{{url ('bower_components/select2/dist/js/select2.full.min.js')}}"></script>
@@ -149,6 +151,7 @@
 
   $(".select2").select2();
   CKEDITOR.replace('detalles');
+  CKEDITOR.replace('editor2');
 
 </script>
 
@@ -193,6 +196,38 @@
       'success'
     )
 
+  @elseif (session('MascotaActualizada') == 'OK')
+
+    Swal.fire(
+      '¡Actualizado!',
+      'La mascota ha sido actualizada correctamente.',
+      'success'
+    )
+
+  @elseif (session('MascotaActualizada') == 'OK')
+
+    Swal.fire(
+      '¡Actualizado!',
+      'La mascota ha sido actualizada correctamente.',
+      'success'
+    )
+
+  @elseif (session('VacunaAgregada') == 'OK')
+
+    Swal.fire(
+      '¡Creada!',
+      'La vacuna ha sido agregada correctamente.',
+      'success'
+    )
+
+  @elseif (session('VeterinarioCreado') == 'OK')
+
+    Swal.fire(
+      '¡Creado!',
+      'El veterinario ha sido creado correctamente.',
+      'success'
+    )
+
   @endif
 
 </script>
@@ -208,6 +243,14 @@
   <script type="text/javascript">
 
     $('#EditarUsuario').modal('toggle');
+
+  </script>
+  
+@elseif ($exp[3] == 'Editar-Mascota')
+
+  <script type="text/javascript">
+
+    $('#EditarMascota').modal('toggle');
 
   </script>
   
@@ -233,6 +276,30 @@
       if (result.isConfirmed) {
 
         window.location = 'Eliminar-Usuario/'+Uid;
+
+      }
+    })
+
+  });
+
+  $(".EliminarMascota").click(function(){
+
+    var mascota = $(this).attr("mascota");
+    var Mid = $(this).attr("Mid");
+
+    Swal.fire({
+      title: '¿Está seguro de eliminar esta mascota: '+mascota+'?',
+      text: "¡No podrá revertir esta acción!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      cancelButtonText: 'Cancelar',
+      confirmButtonText: 'Sí, eliminarlo!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+
+        window.location = 'Eliminar-Mascota/'+Mid;
 
       }
     })
