@@ -58,7 +58,7 @@
                                                 
                                             @endif
 
-                                            <a href="" class="btn btn-primary btn-block"><b>Ver Calendario</b></a>
+                                            <a href="{{url('Calendario/'.$vet->id)}}" class="btn btn-primary btn-block"><b>Ver Calendario</b></a>
 
                                         </div>
 

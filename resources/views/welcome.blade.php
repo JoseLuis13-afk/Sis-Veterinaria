@@ -42,6 +42,10 @@
    <!-- Select 2 -->
   <link rel="stylesheet" href="{{url ('bower_components/select2/dist/css/select2.min.css')}}">
 
+  <!-- FullCalendar -->
+  <link rel="stylesheet" href="{{url ('bower_components/fullcalendar/dist/fullcalendar.min.css')}}">
+  <link rel="stylesheet" href="{{url ('bower_components/fullcalendar/dist/fullcalendar.print.min.css')}}" media="print">
+  
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
@@ -53,8 +57,17 @@
 
         <div class="wrapper">
             @include('modulos.cabecera')
-            <!-- Left side column. contains the logo and sidebar -->
-            @include('modulos.menu')
+
+            @if (auth()->user()->rol == 'Veterinario')
+
+                @include('modulos.menuVet')
+              
+            @else
+            
+                @include('modulos.menu')
+
+            @endif
+
             @yield('contenido')
         </div>
         
@@ -107,9 +120,12 @@
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/responsive.bootstrap.min.js')}}"></script>
 <script type="text/javascript" src="{{url ('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
 
-
 <!-- Select 2 -->
 <script src="{{url ('bower_components/select2/dist/js/select2.full.min.js')}}"></script>
+
+<!-- FullCalendar -->
+<script src="{{url ('bower_components/fullcalendar/dist/fullcalendar.min.js')}}"></script>
+<script src="{{url ('bower_components/fullcalendar/dist/locale/es.js')}}"></script>
 
 <!-- CKeditor -->
 <script src="{{url ('bower_components/ckeditor/ckeditor.js')}}"></script>
@@ -150,8 +166,23 @@
   });
 
   $(".select2").select2();
-  CKEDITOR.replace('detalles');
-  CKEDITOR.replace('editor2');
+  if ($('#editor').length > 0) { 
+      if (!CKEDITOR.instances['editor']) {
+          CKEDITOR.replace('editor'); 
+      }
+  }
+  
+  if ($('#editor2').length > 0) { 
+      if (!CKEDITOR.instances['editor2']) {
+          CKEDITOR.replace('editor2'); 
+      }
+  }
+
+  if ($('#detalles').length > 0) { 
+      if (!CKEDITOR.instances['detalles']) {
+          CKEDITOR.replace('detalles'); 
+      }
+  }
 
 </script>
 
@@ -225,6 +256,30 @@
     Swal.fire(
       '¡Creado!',
       'El veterinario ha sido creado correctamente.',
+      'success'
+    )
+
+  @elseif (session('CitaAgendada') == 'OK')
+
+    Swal.fire(
+      '¡Creado!',
+      'La cita ha sido agendada correctamente.',
+      'success'
+    )
+
+  @elseif (session('HistorialAgragado') == 'OK')
+
+    Swal.fire(
+      '¡Agregado!',
+      'El historial ha sido agregado correctamente.',
+      'success'
+    )
+
+  @elseif (session('HistorialActualizado') == 'OK')
+
+    Swal.fire(
+      '¡Actualizado!',
+      'El historial ha sido actualizado correctamente.',
       'success'
     )
 
@@ -307,6 +362,180 @@
   });
 
 </script>
+
+@if ($exp [3] == 'Calendario')
+
+  <script type="text/javascript">
+
+    var date = new Date();
+    var d = date.getDate(),
+        m = date.getMonth(),
+        a = date.getFullYear()
+
+      $('#calendario').fullCalendar({
+
+        
+
+          defaultView: 'agendaWeek',
+          hiddenDays: [ 0, 6 ],
+
+          events: [
+
+              @foreach ($citas as $cita )
+
+                @foreach ($mascotas as $mascota)
+
+                  @if ($cita->id_mascota == $mascota->id)
+
+                    @if ($cita->estado == 'Solicitada')
+
+                      {
+                        id : '{{$cita->id}}',
+                        title : '{{$mascota->DUEÑO->nombre}} - {{$mascota->nombre}} | {{$cita->estado}}',
+                        start : '{{$cita->inicio}}',
+                        end : '{{$cita->fin}}',
+                        backgroundColor : '#1C72FF',
+                        borderColor : '#1C72FF'
+                      },
+                    @elseif ($cita->estado == 'Finalizada')
+
+                      {
+                        id : '{{$cita->id}}',
+                        title : '{{$mascota->DUEÑO->nombre}} - {{$mascota->nombre}} | {{$cita->estado}}',
+                        start : '{{$cita->inicio}}',
+                        end : '{{$cita->fin}}',
+                        backgroundColor : '#0FA603',
+                        borderColor : '#0FA603'
+                      },
+
+                    @elseif ($cita->estado == 'En Proceso')
+
+                      {
+                        id : '{{$cita->id}}',
+                        title : '{{$mascota->DUEÑO->nombre}} - {{$mascota->nombre}} | {{$cita->estado}}',
+                        start : '{{$cita->inicio}}',
+                        end : '{{$cita->fin}}',
+                        backgroundColor : '#D88B03',
+                        borderColor : '#D88B03'
+                      },
+
+                    @endif                  
+                    
+                  @endif
+                  
+                @endforeach
+                
+              @endforeach
+
+          ],
+          scrollTime: '08:00:00',
+          minTime: '09:00:00',
+          maxTime: '18:00:00',
+
+          dayClick: function(date, jsEvent, view) {
+
+            var fecha = date.format();
+
+            fecha = fecha.split("T");
+
+            n = new Date();
+            d = n.getDate(),
+            m = n.getMonth() + 1,
+            y = n.getFullYear()
+
+            if (m < 10) {
+
+              M = "0" + m;
+
+            }else {
+
+              M = m;
+
+            }
+            if (d < 10) {
+
+              D = "0" + d;
+
+            }else {
+
+              D = d;
+
+            }
+            diaActual = y + "-" + M + "-" + D;
+
+            if (diaActual <= fecha[0]){
+
+              @if ($veterinario->estado == 'Disponible')
+
+                $("#CitaModal").modal();
+
+              @endif
+
+            }
+
+            $("#fecha").val(fecha[0]);
+            horaModal = fecha[1].split(":");
+            $("#hora").val(horaModal[0] + ':' + horaModal[1]);
+
+            if (horaModal[1] == '00') {
+              horaFin = horaModal[0];
+              minutosFin = '30';
+            }
+            else {
+              horaFin = parseFloat(horaModal[0]) + 1;
+              minutosFin = '00';
+
+            }
+            $("#fyhInicial").val(fecha[0] + ' ' + fecha[1]);
+            $("#fyhFinal").val(fecha[0] + ' ' + horaFin + ':' + minutosFin +':00');
+
+
+            if (!CKEDITOR.instances['editor']) {
+                CKEDITOR.replace('editor');
+            }
+
+          },
+
+          eventClick: function(calEvent, jsEvent, view) {
+
+            $("#CancelarCita").modal();
+
+            $("#paciente").html(calEvent.title);
+            $("#CitaId").val(calEvent.id);
+
+          }
+
+      });
+
+      $('#cliente').change(function(){
+
+        var clienteId = $(this).val();
+        var url = $(this).attr("url");
+
+        $.ajax({
+
+          url: url + '/Obtener-Mascotas/' + clienteId,
+          type: 'GET',
+          success: function(data) {
+
+            $("#mascotas").empty();
+
+            $('#mascotas').append('<option value="">Seleccionar Mascota</option>');
+
+            $.each(data, function(key, mascota) {
+
+              $('#mascotas').append('<option value="' + mascota.id + '">' + mascota.nombre + '</option>');
+
+            });
+
+          }
+        })
+
+      });
+
+  </script>
+
+@endif
 
 </body>
 </html>

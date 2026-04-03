@@ -28,7 +28,7 @@
 
                             <h2>Logo</h2>
                             <input type="file" name="logo" class="form-control">
-                            <img src="{{url('storage/logo.png')}}" width="250px">
+                            <img src="{{ asset('storage/logo.png?v='.time()) }}" class="img-fluid img-thumbnail" style="max-height: 250px; display: block; margin: 0 auto;">
 
                         </div>
 

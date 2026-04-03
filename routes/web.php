@@ -51,8 +51,15 @@ Route::post('Veterinarios', [CitasController::class, 'CrearVeterinarios']);
 Route::put('Estado/{id_veterinario}', [CitasController::class, 'CambiarEstadoVeterinario']);
 
 Route::get('Citas', [CitasController::class, 'index']);
-Route::get('Crear-Cita', [CitasController::class, 'create']);
-Route::post('Crear-Cita', [CitasController::class, 'store']);
-Route::get('Editar-Cita/{id_cita}', [CitasController::class, 'edit']);
-Route::put('Actualizar-Cita/{id_cita}', [CitasController::class, 'update']);
-Route::get('Eliminar-Cita/{id_cita}', [CitasController::class, 'destroy']);
+Route::get('Calendario/{id_veterinario}', [CitasController::class, 'Calendario']);
+Route::get('Obtener-Mascotas/{id_cliente}', [CitasController::class, 'ObtenerMascotas']);
+Route::post('Calendario/{id_veterinario}', [CitasController::class, 'AgendarCita']);
+Route::delete('Cancelar-Cita', [CitasController::class, 'CancelarCita']);
+
+Route::get('Citas-Hoy/{id_veterinario}', [CitasController::class, 'VerCitasHoyVeterinario']);
+Route::post('Citas-Hoy/{id_veterinario}', [CitasController::class, 'CambiarEstadoCita']);
+Route::get('Cita/{id_cita}', [CitasController::class, 'VerCita']);
+Route::post('Finalizar-Cita/{id_cita}', [CitasController::class, 'FinalizarCita']);
+Route::post('Cita/{id_cita}', [CitasController::class, 'HistorialCita']);
+Route::put('Cita-Historial-Imagen/{id_cita}', [CitasController::class, 'ImgHistorial']);
+Route::delete('Cita-Historial-Imagen-Borrar/{id_imagen}', [CitasController::class, 'BorrarImgHistorial']);

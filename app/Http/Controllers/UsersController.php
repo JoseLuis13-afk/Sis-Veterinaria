@@ -39,24 +39,33 @@ class UsersController extends Controller
 
     public function ActualizarAjustes(Request $request)
     {
-        $datos = request();
-
+        // Es mejor usar $request directamente que request()
         $ajustes = Ajustes::find(1);
-        $ajustes->telefono = $datos['telefono'];
-        $ajustes->direccion = $datos['direccion'];
-        $ajustes->moneda = $datos['moneda'];
-        $ajustes->zona_horaria = $datos['zona_horaria'];
+        $ajustes->telefono = $request->telefono;
+        $ajustes->direccion = $request->direccion;
+        $ajustes->moneda = $request->moneda;
+        $ajustes->zona_horaria = $request->zona_horaria;
 
-        if (request('logo')) {
-           
-            $path = storage_path('app/public/logo.png');
-            unlink($path);
-            $rutaImg = $datos["logo"]->store('public');
+        if ($request->hasFile('logo')) {
+    
+            // 1. Ruta absoluta donde DEBE estar el logo para que se vea en la web
+            $pathDestino = storage_path('app/public/logo.png');
 
+            // 2. Borramos cualquier rastro del logo anterior
+            if (file_exists($pathDestino)) {
+                unlink($pathDestino);
+            }
+
+            // 3. GUARDADO CORRECTO:
+            // El primer parámetro '' significa la raíz del disco
+            // El segundo 'logo.png' es el nombre fijo
+            // El tercer 'public' es el DISCO que definiste en filesystems.php
+            $request->file('logo')->storeAs('', 'logo.png', 'public');
         }
 
         $ajustes->save();
-        return redirect('Inicio');
+        
+        return redirect('Inicio')->with('success', 'Ajustes actualizados correctamente');
     }
 
    public function ActualizarMisDatos(Request $request)

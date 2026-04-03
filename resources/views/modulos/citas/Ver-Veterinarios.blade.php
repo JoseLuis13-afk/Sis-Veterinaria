@@ -94,8 +94,17 @@
 
                                         <td>
 
-                                            <button class="btn btn-warning">Ver Agenda Hoy</button>
-                                            <button class="btn btn-primary">Ver Agenda Completa</button>
+                                            <a href="{{url('Citas-Hoy/'.$veterinario->id)}}">
+
+                                                <button class="btn btn-warning">Ver Agenda Hoy</button>
+
+                                            </a>
+
+                                            <a href="{{url('Calendario/'.$veterinario->id)}}">
+
+                                                <button class="btn btn-primary">Ver Agenda Completa</button>
+
+                                            </a>
 
                                         </td>
                                     </tr>

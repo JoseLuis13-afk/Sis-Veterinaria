@@ -4,7 +4,7 @@
 
     <div class="login-box">
         <div class="login-logo">
-            <a href="#"><b>VETERINARIA</b>LTE</a>
+            <a href="#"><b>VIDA ANIMAL</b><br>VETERINARIA</a>
         </div>
         <!-- /.login-logo -->
         <div class="login-box-body">
