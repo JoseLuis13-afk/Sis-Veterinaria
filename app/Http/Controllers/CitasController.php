@@ -8,6 +8,7 @@ use App\Models\Ajustes;
 use App\Models\Historial;
 use App\Models\ImgHistorial;
 use App\Models\Receta;
+use App\Models\Internaciones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
@@ -181,6 +182,7 @@ class CitasController extends Controller
         $cliente = Clientes::find($cita->id_cliente);
         $veterinario = Clientes::find($cita->id_veterinario);
         $mascota = Mascotas::find($cita->id_mascota);
+        $ajustes = Ajustes::find(1);
 
         $historial = Historial::where('id_cita', $id_cita)->first();
 
@@ -196,7 +198,9 @@ class CitasController extends Controller
 
         $receta = Receta::where('id_cita', $cita->id)->first();
 
-        return view('modulos.citas.Cita', compact('cita', 'cliente', 'veterinario', 'mascota', 'historial', 'imagenes', 'receta'));
+        $internacion = Internaciones::where('id_cita', $id_cita)->where('fecha_alta', 0)->first();
+
+        return view('modulos.citas.Cita', compact('cita', 'cliente', 'veterinario', 'mascota', 'historial', 'imagenes', 'receta', 'internacion', 'ajustes'));
         
     }
     

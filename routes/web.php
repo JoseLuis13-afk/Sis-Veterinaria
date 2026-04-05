@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientesController;
 use App\Http\Controllers\MascotasController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\CitasController;
+use App\Http\Controllers\InternacionesController; 
 
 Route::get('/', function () {
     return view('modulos.users.Ingresar');
@@ -68,3 +69,6 @@ Route::get('Historial/{id_mascota}', [CitasController::class, 'HistorialMascota'
 
 Route::post('Receta/{id_cita}', [CitasController::class, 'Receta']);
 Route::get('Receta-PDF/{id_receta}', [CitasController::class, 'RecetaPDF']);
+
+Route::post('Internar/{id_cita}', [InternacionesController::class, 'store']);
+Route::get('Internaciones/', [InternacionesController::class, 'index']);

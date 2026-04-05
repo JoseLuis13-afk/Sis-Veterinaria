@@ -64,6 +64,16 @@
 
                          </a>
 
+                         @if ($internacion == null )
+
+                            <button class="btn btn-warning" data-toggle="modal" data-target="#Internar">Internar</button>
+
+                         @else
+
+                            <button class="btn btn-warning">Ver Internacion</button>
+                             
+                         @endif
+
                          @if ($receta == null)
 
                                 <button class="btn btn-info pull-right" data-toggle="modal" data-target="#Receta">Agregar Receta</button>
@@ -209,11 +219,59 @@
 
         <div id="RecetaEditar" class="modal fade">
 
+            <div class="modal-dialog">
+
+                <div class="modal-content">
+
+                    <form method="post" action="{{url('Receta/'.$cita->id)}}">
+
+                        @csrf
+
+                        <div class="modal-body">
+
+                            <div class="box-body">
+
+                                <div class="form-group">
+
+                                    <h2>Receta :</h2>
+
+                                    <input type="hidden" name="tipo" value="Actualizar">
+
+                                    <textarea name="receta" id="editor3" required>{!! $receta->receta !!}</textarea>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <button type="submit" class="btn btn-primary">Actualizar Receta</button>
+
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+    @else
+        
+    @endif
+
+    <div id="Internar" class="modal fade">
+
         <div class="modal-dialog">
 
             <div class="modal-content">
 
-                <form method="post" action="{{url('Receta/'.$cita->id)}}">
+                <form method="post" action="{{url('Internar/'.$cita->id)}}">
 
                     @csrf
 
@@ -223,11 +281,29 @@
 
                             <div class="form-group">
 
-                                <h2>Receta :</h2>
+                                <h2>Fecha de Internacion :</h2>
 
-                                <input type="hidden" name="tipo" value="Actualizar">
+                                @php
+                                    
+                                    date_default_timezone_set($ajustes->zona_horaria);
 
-                                <textarea name="receta" id="editor3" required>{!! $receta->receta !!}</textarea>
+                                    $fechaHoy = date('Y/m/d');
+
+                                @endphp
+
+                                <input class="form-control" type="text" name="fecha_inicio" value="{{ $fechaHoy }}" required>
+
+
+                            </div>
+
+                            <div class="form-group">
+
+                                <h2>Motivo de Internacion :</h2>
+
+                                
+
+                                <input class="form-control" type="text" name="motivo" value="" required>
+
 
                             </div>
 
@@ -237,7 +313,7 @@
 
                     <div class="modal-footer">
 
-                        <button type="submit" class="btn btn-primary">Actualizar Receta</button>
+                        <button type="submit" class="btn btn-warning">Internar</button>
 
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
 
@@ -250,9 +326,5 @@
         </div>
 
     </div>
-        
-    @else
-        
-    @endif
 
 @endsection

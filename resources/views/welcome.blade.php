@@ -317,6 +317,14 @@
       'success'
     )
 
+   @elseif (session('MascotaInternada') == 'OK')
+
+    Swal.fire(
+      '¡Internada!',
+      'La mascota ha sido Internada correctamente.',
+      'success'
+    )
+
   @endif
 
 </script>
