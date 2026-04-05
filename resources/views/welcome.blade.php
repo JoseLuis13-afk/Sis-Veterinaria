@@ -137,6 +137,18 @@
   $(".sidebar-menu").tree();
   $("[data-mask]").inputmask();
   $(".table").DataTable({
+
+    <?php
+
+      $exp = explode("/", $_SERVER["REQUEST_URI"]);
+
+      if ($exp[3] == 'Citas-Hoy') {
+
+        echo '"order": [[ 0, "asc" ]],';
+
+      }
+
+    ?>
     
     "ordering": false,
 
@@ -175,6 +187,12 @@
   if ($('#editor2').length > 0) { 
       if (!CKEDITOR.instances['editor2']) {
           CKEDITOR.replace('editor2'); 
+      }
+  }
+
+  if ($('#editor3').length > 0) { 
+      if (!CKEDITOR.instances['editor3']) {
+          CKEDITOR.replace('editor3'); 
       }
   }
 
@@ -280,6 +298,22 @@
     Swal.fire(
       '¡Actualizado!',
       'El historial ha sido actualizado correctamente.',
+      'success'
+    )
+
+  @elseif (session('RecetaCreada') == 'OK')
+
+    Swal.fire(
+      '¡Creada!',
+      'La receta ha sido creada correctamente.',
+      'success'
+    )
+
+  @elseif (session('RecetaActualizada') == 'OK')
+
+    Swal.fire(
+      '¡Actualizada!',
+      'La receta ha sido actualizada correctamente.',
       'success'
     )
 

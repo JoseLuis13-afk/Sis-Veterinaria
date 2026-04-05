@@ -112,6 +112,45 @@
 
                          </table>
 
+                         <hr>
+
+                         <h2>Citas Anteriores</h2>
+
+                         <table class="table table-bordered table-hover table-striped dt-responsive" style="width: 100%">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Hora</th>
+                                    <th>Cliente</th>
+                                    <th>Mascota</th>
+                                    <th>Nota</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                @foreach ($citasHistorial as $citaH)
+
+
+                                    <tr>
+
+                                        <td>{{ $citaH->inicio }}</td>
+                                        <td>{{ $citaH->CLIENTE->nombre }}</td>
+                                        <td>{{ $citaH->MASCOTA->nombre }}</td>
+                                        <td>{!! $citaH->nota !!}</td>
+
+                                    </tr>
+                                    
+                                @endforeach
+
+                            </tbody>
+
+                         </table>
+
                 </div>
 
             </div>

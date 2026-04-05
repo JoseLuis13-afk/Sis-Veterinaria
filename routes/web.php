@@ -63,3 +63,8 @@ Route::post('Finalizar-Cita/{id_cita}', [CitasController::class, 'FinalizarCita'
 Route::post('Cita/{id_cita}', [CitasController::class, 'HistorialCita']);
 Route::put('Cita-Historial-Imagen/{id_cita}', [CitasController::class, 'ImgHistorial']);
 Route::delete('Cita-Historial-Imagen-Borrar/{id_imagen}', [CitasController::class, 'BorrarImgHistorial']);
+
+Route::get('Historial/{id_mascota}', [CitasController::class, 'HistorialMascota']);
+
+Route::post('Receta/{id_cita}', [CitasController::class, 'Receta']);
+Route::get('Receta-PDF/{id_receta}', [CitasController::class, 'RecetaPDF']);

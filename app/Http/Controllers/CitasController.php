@@ -7,10 +7,12 @@ use App\Models\User;
 use App\Models\Ajustes;
 use App\Models\Historial;
 use App\Models\ImgHistorial;
+use App\Models\Receta;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Elibyy\TCPDF\Facades\TCPDF;
 use App\Models\Clientes;
 use App\Models\Mascotas;
 
@@ -143,7 +145,9 @@ class CitasController extends Controller
         date_default_timezone_set($ajustes["zona_horaria"]); 
         $citas = Citas::where('id_veterinario', $id_veterinario)->whereDate('inicio', $fechaHoy. ' %')->get();
 
-        return view('modulos.citas.Citas-Hoy', compact('veterinario', 'citas'));
+        $citasHistorial = Citas::where('id_veterinario', $id_veterinario)->orderBy('inicio', 'desc')->get();
+
+        return view('modulos.citas.Citas-Hoy', compact('veterinario', 'citas', 'citasHistorial'));
     }
 
     
@@ -190,7 +194,9 @@ class CitasController extends Controller
 
         }
 
-        return view('modulos.citas.Cita', compact('cita', 'cliente', 'veterinario', 'mascota', 'historial', 'imagenes'));
+        $receta = Receta::where('id_cita', $cita->id)->first();
+
+        return view('modulos.citas.Cita', compact('cita', 'cliente', 'veterinario', 'mascota', 'historial', 'imagenes', 'receta'));
         
     }
     
@@ -279,5 +285,70 @@ class CitasController extends Controller
         return back();
        
      }
+
+     public function HistorialMascota($id_mascota)
+     {
+        $historial = Historial::orderBy('fecha', 'desc')->where('id_mascota', $id_mascota)->get();
+
+        $mascota = Mascotas::find($id_mascota);
+
+        return view('modulos.citas.HistorialMascota', compact('mascota', 'historial'));
+       
+     }
+
+     public function Receta(Request $request, $id_cita)
+     {
+        $datos = request();
+
+        if ($datos["tipo"] == 'Crear'){
+
+            Receta::create(['receta' => $datos["receta"], 'id_cita' => $id_cita]);
+
+            return redirect('Cita/'.$id_cita)->with('RecetaCreada', 'OK');
+
+        }else{
+
+            Receta::where('id_cita', $id_cita)->update(['receta' => $datos["receta"]]);
+
+            return redirect('Cita/'.$id_cita)->with('RecetaActualizada', 'OK');
+
+        }   
+          
+     }
+
+     public function RecetaPDF($id_receta)
+    {
+        $pdf = new \Elibyy\TCPDF\TCPDF('P', 'mm', 'A4', true, 'UTF-8', false);
+        $pdf->SetCreator('Veterinaria App');
+        $pdf->SetTitle('Receta');
+        $pdf->SetMargins(10, 10, 10, false);
+        $pdf->SetAutoPageBreak(true, 20);
+        $pdf->AddPage();
+
+        $receta = Receta::find($id_receta);
+
+        $cita = Citas::find($receta->id_cita);
+
+        $mascota = Mascotas::find($cita->id_mascota);
+        $dueño = Clientes::find($cita->id_cliente);
+        $veterinario = User::find($cita->id_veterinario);
+        $ajustes =  Ajustes::find(1);
+
+        $logo = storage_path('app/public/logo.png');
+        $pdf->Image($logo, 150, 10, 40, '','','', 'T', false, 300, '', false, false, 0, false, false,false );
+
+        $html = '
+                  
+                    <h3>Veterinario: '.$veterinario->name.'</h3>
+                    <h3>Dueño: '.$dueño->nombre.'</h3>
+                    <h3>Mascota: '.$mascota->nombre.'</h3>
+                    <h2>Receta: '.$receta->receta.'</h2>                                   
+
+                    <p>'.$ajustes["direccion"].' || '.$ajustes["telefono"].'</p>
+                 
+                        ';
+        $pdf->writeHTML($html, true, false, true, false, '');
+        $pdf-> Output('Receta- '.$mascota->nombre.' - '.$receta->id.'.pdf', 'I');
+    }
 
 }

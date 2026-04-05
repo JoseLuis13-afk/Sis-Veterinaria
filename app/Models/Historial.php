@@ -20,4 +20,9 @@ class Historial extends Model
     ];
 
     public $timestamps = false;
+
+    public function VETERINARIO()
+    {
+        return $this->belongsTo(User::class, 'id_veterinario');
+    }
 }

@@ -58,11 +58,27 @@
 
                 <div class="box-body">
 
-                         <a href="">
+                         <a href="{{url('Historial/'.$cita->id_mascota)}}">
 
                             <button class="btn btn-primary">Ver Historial Completo</button>
 
                          </a>
+
+                         @if ($receta == null)
+
+                                <button class="btn btn-info pull-right" data-toggle="modal" data-target="#Receta">Agregar Receta</button>
+                             
+                         @else
+
+                            <a href="{{url('Receta-PDF/'.$receta->id)}}" target="_blank ">
+
+                                <button class="btn btn-default pull-right">Generar PDF</button>
+
+                            </a>
+
+                            <button class="btn btn-info pull-right" data-toggle="modal" data-target="#RecetaEditar">Editar Receta</button>
+                             
+                         @endif
 
                          @if ($historial == '')
 
@@ -144,5 +160,99 @@
 
         </section>
     </div>
+
+    <div id="Receta" class="modal fade">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <form method="post" action="{{url('Receta/'.$cita->id)}}">
+
+                    @csrf
+
+                    <div class="modal-body">
+
+                        <div class="box-body">
+
+                            <div class="form-group">
+
+                                <h2>Receta :</h2>
+
+                                <input type="hidden" name="tipo" value="Crear">
+
+                                <textarea name="receta" id="editor2" required></textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="submit" class="btn btn-primary">Guardar Receta</button>
+
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+    @if ($receta != null)
+
+        <div id="RecetaEditar" class="modal fade">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <form method="post" action="{{url('Receta/'.$cita->id)}}">
+
+                    @csrf
+
+                    <div class="modal-body">
+
+                        <div class="box-body">
+
+                            <div class="form-group">
+
+                                <h2>Receta :</h2>
+
+                                <input type="hidden" name="tipo" value="Actualizar">
+
+                                <textarea name="receta" id="editor3" required>{!! $receta->receta !!}</textarea>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <button type="submit" class="btn btn-primary">Actualizar Receta</button>
+
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+        
+    @else
+        
+    @endif
 
 @endsection
